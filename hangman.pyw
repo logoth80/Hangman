@@ -12,6 +12,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+GREY = (120, 120, 120)
 
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -22,6 +23,7 @@ big_font = pygame.font.Font(None, 80)
 long_font = pygame.font.Font(None, 60)
 font = pygame.font.Font(None, 48)
 small_font = pygame.font.Font(None, 36)
+very_small_font = pygame.font.Font(None, 16)
 
 
 # Read the dictionary from file
@@ -76,7 +78,8 @@ while running:
 
     # Clear the screen
     screen.fill(WHITE)
-
+    text_surface = very_small_font.render("F5 to restart, ESC to quit", True, GREY)
+    screen.blit(text_surface, (600, 15))
     # Draw the word with underscores for unguessed letters
     displayed_word = "".join(
         [letter if letter in guessed_letters else "_" for letter in current_word]
@@ -86,16 +89,16 @@ while running:
     word_length = len(displayed_word)
     for l in range(0, word_length):
         l_x = 0
-        if displayed_word[l] == "i":
+        if displayed_word[l] == "I":
             l_x = 3
-        if displayed_word[l] == "l":
+        if displayed_word[l] == "L":
             l_x = 1
         if len(displayed_word) < 10:
             word_width = word_length * 50
             text_surface = big_font.render(displayed_word[l], True, BLACK)
             screen.blit(
                 text_surface,
-                (l_x * 7 + WIDTH - (word_width // 9) - (word_length - l) * 50, 200),
+                (l_x * 4 + WIDTH - (word_width // 9) - (word_length - l) * 50, 200),
             )
         elif len(displayed_word) <= 12:
             word_width = word_length * 40
@@ -103,7 +106,7 @@ while running:
             screen.blit(
                 text_surface,
                 (
-                    l_x * 4 + WIDTH - (word_width // 9) - (word_length - l) * 40,
+                    l_x * 3 + WIDTH - (word_width // 9) - (word_length - l) * 40,
                     200,
                 ),
             )
@@ -112,7 +115,7 @@ while running:
             text_surface = font.render(displayed_word[l], True, BLACK)
             screen.blit(
                 text_surface,
-                (l_x * 3 + WIDTH - (word_width // 9) - (word_length - l) * 30, 200),
+                (l_x * 2 + WIDTH - (word_width // 9) - (word_length - l) * 30, 200),
             )
 
     # Draw the hangman on the left side
