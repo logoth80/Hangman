@@ -105,10 +105,7 @@ while running:
             text_surface = long_font.render(displayed_word[l], True, BLACK)
             screen.blit(
                 text_surface,
-                (
-                    l_x * 3 + WIDTH - (word_width // 9) - (word_length - l) * 40,
-                    200,
-                ),
+                (l_x * 3 + WIDTH - (word_width // 9) - (word_length - l) * 40, 200),
             )
         else:
             word_width = word_length * 30
