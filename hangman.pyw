@@ -92,38 +92,56 @@ while running:
     # text_surface = big_font.render(displayed_word, True, BLACK)
     # screen.blit(text_surface, (WIDTH // 1.5 - text_surface.get_width() // 2, HEIGHT // 2 - 100))
     word_length = len(displayed_word)
-    for l in range(0, word_length):
+    for placed_letter in range(0, word_length):
         l_x = 0
-        if displayed_word[l] == "i":
+        if displayed_word[placed_letter] == "i":
             l_x = 3
-        if displayed_word[l] == "l":
-            l_x = 1
-        if displayed_word[l] == "j":
+        if displayed_word[placed_letter] == "l":
             l_x = 2
-        if displayed_word[l] == "e":
+        if displayed_word[placed_letter] == "j":
+            l_x = 2
+        if displayed_word[placed_letter] == "e":
             l_x = 1
-        if displayed_word[l] == "m":
+        if displayed_word[placed_letter] == "m":
             l_x = -1
         if len(displayed_word) < 10:
             word_width = word_length * 50
-            text_surface = big_font.render(displayed_word[l], True, color1)
+            text_surface = big_font.render(displayed_word[placed_letter], True, color1)
             screen.blit(
                 text_surface,
-                (l_x * 4 + WIDTH - (word_width // 9) - (word_length - l) * 50, 200),
+                (
+                    l_x * 4
+                    + WIDTH
+                    - (word_width // 9)
+                    - (word_length - placed_letter) * 50,
+                    200,
+                ),
             )
         elif len(displayed_word) <= 12:
             word_width = word_length * 40
-            text_surface = long_font.render(displayed_word[l], True, color1)
+            text_surface = long_font.render(displayed_word[placed_letter], True, color1)
             screen.blit(
                 text_surface,
-                (l_x * 3 + WIDTH - (word_width // 9) - (word_length - l) * 40, 200),
+                (
+                    l_x * 3
+                    + WIDTH
+                    - (word_width // 9)
+                    - (word_length - placed_letter) * 40,
+                    200,
+                ),
             )
         else:
             word_width = word_length * 30
-            text_surface = font.render(displayed_word[l], True, color1)
+            text_surface = font.render(displayed_word[placed_letter], True, color1)
             screen.blit(
                 text_surface,
-                (l_x * 2 + WIDTH - (word_width // 9) - (word_length - l) * 30, 200),
+                (
+                    l_x * 2
+                    + WIDTH
+                    - (word_width // 9)
+                    - (word_length - placed_letter) * 30,
+                    200,
+                ),
             )
 
     # Draw the hangman on the left side
