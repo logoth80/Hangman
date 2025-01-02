@@ -14,6 +14,11 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 GREY = (120, 120, 120)
 
+color1 = (17, 45, 78)
+color2 = (63, 114, 175)
+color3 = (219, 226, 239)
+color4 = (249, 247, 247)
+
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hangman Game")
@@ -27,23 +32,22 @@ very_small_font = pygame.font.Font(None, 16)
 
 
 # Read the dictionary from file
-def read_dictionary(file_path):
-    words = {}
-    with open(file_path, "r") as file:
-        for line in file:
-            parts = line.strip().split("\t")
-            if len(parts) > 1:
-                word = parts[0]
-                description_parts = parts[1].split(",")
-                if len(description_parts) > 1:
-                    description = description_parts[1].strip()
-                    words[word] = description
-    return words
+word_list = []
+
+with open("pruned_polish.txt", "r", encoding="UTF-8") as file:
+    for line in file:
+        # Split the line by ';'
+        parts = line.strip().split(";")
+
+        if len(parts) >= 0:
+            word = parts[0]
+
+            # Check if the word is not capitalized and has at least 5 letters
+            if not word.isupper() and len(word) >= 5:
+                word_list.append(word)
 
 
 # Initialize game variables
-dictionary = read_dictionary("Collins Scrabble Words (2019) with definitions.txt")
-word_list = list(dictionary.keys())
 current_word = random.choice(word_list)
 guessed_letters = set()
 wrong_guesses = 0
@@ -65,7 +69,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
-            letter = event.unicode.upper()
+            letter = event.unicode.lower()
+            # letter = pygame.key.name(event.key).lower()
             if letter not in guessed_letters:
                 guessed_letters.add(letter)
                 if letter not in current_word:
@@ -77,8 +82,8 @@ while running:
                 sys.exit()
 
     # Clear the screen
-    screen.fill(WHITE)
-    text_surface = very_small_font.render("F5 to restart, ESC to quit", True, GREY)
+    screen.fill(color4)
+    text_surface = very_small_font.render("F5 to restart, ESC to quit", True, color2)
     screen.blit(text_surface, (600, 15))
     # Draw the word with underscores for unguessed letters
     displayed_word = "".join(
@@ -89,27 +94,33 @@ while running:
     word_length = len(displayed_word)
     for l in range(0, word_length):
         l_x = 0
-        if displayed_word[l] == "I":
+        if displayed_word[l] == "i":
             l_x = 3
-        if displayed_word[l] == "L":
+        if displayed_word[l] == "l":
             l_x = 1
+        if displayed_word[l] == "j":
+            l_x = 2
+        if displayed_word[l] == "e":
+            l_x = 1
+        if displayed_word[l] == "m":
+            l_x = -1
         if len(displayed_word) < 10:
             word_width = word_length * 50
-            text_surface = big_font.render(displayed_word[l], True, BLACK)
+            text_surface = big_font.render(displayed_word[l], True, color1)
             screen.blit(
                 text_surface,
                 (l_x * 4 + WIDTH - (word_width // 9) - (word_length - l) * 50, 200),
             )
         elif len(displayed_word) <= 12:
             word_width = word_length * 40
-            text_surface = long_font.render(displayed_word[l], True, BLACK)
+            text_surface = long_font.render(displayed_word[l], True, color1)
             screen.blit(
                 text_surface,
                 (l_x * 3 + WIDTH - (word_width // 9) - (word_length - l) * 40, 200),
             )
         else:
             word_width = word_length * 30
-            text_surface = font.render(displayed_word[l], True, BLACK)
+            text_surface = font.render(displayed_word[l], True, color1)
             screen.blit(
                 text_surface,
                 (l_x * 2 + WIDTH - (word_width // 9) - (word_length - l) * 30, 200),
@@ -117,45 +128,39 @@ while running:
 
     # Draw the hangman on the left side
     if wrong_guesses >= 1:
-        pygame.draw.line(screen, BLACK, (10, 380), (190, 380), 5)
+        pygame.draw.line(screen, color1, (10, 380), (190, 380), 5)
     if wrong_guesses >= 2:
-        pygame.draw.line(screen, BLACK, (100, 30), (100, 380), 5)
+        pygame.draw.line(screen, color1, (100, 30), (100, 380), 5)
     if wrong_guesses >= 3:
-        pygame.draw.line(screen, BLACK, (200, 30), (100, 30), 5)
+        pygame.draw.line(screen, color1, (200, 30), (100, 30), 5)
     if wrong_guesses >= 4:
-        pygame.draw.line(screen, BLACK, (200, 30), (200, 80), 5)
+        pygame.draw.line(screen, color1, (200, 30), (200, 80), 5)
     if wrong_guesses >= 5:
-        pygame.draw.circle(screen, BLACK, (200, 105), 25, 5)
+        pygame.draw.circle(screen, color1, (200, 105), 25, 5)
     if wrong_guesses >= 6:
-        pygame.draw.line(screen, BLACK, (200, 130), (200, 250), 5)
+        pygame.draw.line(screen, color1, (200, 130), (200, 250), 5)
     if wrong_guesses >= 7:
-        pygame.draw.line(screen, BLACK, (200, 150), (170, 230), 5)
+        pygame.draw.line(screen, color1, (200, 150), (170, 230), 5)
     if wrong_guesses >= 8:
-        pygame.draw.line(screen, BLACK, (200, 150), (230, 230), 5)
+        pygame.draw.line(screen, color1, (200, 150), (230, 230), 5)
     if wrong_guesses >= 9:
-        pygame.draw.line(screen, BLACK, (200, 250), (170, 330), 5)
+        pygame.draw.line(screen, color1, (200, 250), (170, 330), 5)
     if wrong_guesses >= 10:
-        pygame.draw.line(screen, BLACK, (200, 250), (230, 330), 5)
+        pygame.draw.line(screen, color1, (200, 250), (230, 330), 5)
 
     # Display used letters
     used_letters_text = " ".join(sorted(guessed_letters))
-    text_surface = small_font.render(used_letters_text, True, BLACK)
+    text_surface = small_font.render(used_letters_text, True, color1)
     screen.blit(
         text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 150)
     )
 
     # Check for win/loss
     if "_" not in displayed_word:
-        text_surface = font.render(f"Congratulations! You won!", True, GREEN)
+        text_surface = font.render("Congratulations! You won!", True, color2)
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
-        )
-        description = dictionary[current_word]
-        text_surface = small_font.render(description, True, BLACK)
-        screen.blit(
-            text_surface,
-            (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 250),
         )
     elif wrong_guesses == max_wrong_guesses:
         text_surface = font.render(
@@ -164,12 +169,6 @@ while running:
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
-        )
-        description = dictionary[current_word]
-        text_surface = small_font.render(description, True, BLACK)
-        screen.blit(
-            text_surface,
-            (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 250),
         )
 
     # Update the display
