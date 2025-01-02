@@ -34,7 +34,7 @@ very_small_font = pygame.font.Font(None, 16)
 # Read the dictionary from file
 word_list = []
 
-with open("class_c.txt", "r", encoding="UTF-8") as file:
+with open("polish.txt", "r", encoding="UTF-8") as file:
     for line in file:
         # Split the line by ';'
         parts = line.strip().split(";")
