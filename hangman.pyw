@@ -14,10 +14,10 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 GREY = (120, 120, 120)
 
-color1 = (17, 45, 78)
-color2 = (63, 114, 175)
-color3 = (219, 226, 239)
-color4 = (249, 247, 247)
+hangman_color = (0, 104, 132)
+loss_color = (250, 157, 0)
+letter_color = (0, 104, 132)
+bg_color = (255, 208, 141)
 
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -34,7 +34,10 @@ very_small_font = pygame.font.Font(None, 16)
 # Read the dictionary from file
 word_list = []
 
-with open("pruned_polish.txt", "r", encoding="UTF-8") as file:
+dictionary_file = "pruned_polish.txt"
+# dictionary_file = "pruned_english.txt"
+
+with open(dictionary_file, "r", encoding="UTF-8") as file:
     for line in file:
         # Split the line by ';'
         parts = line.strip().split(";")
@@ -82,8 +85,10 @@ while running:
                 sys.exit()
 
     # Clear the screen
-    screen.fill(color4)
-    text_surface = very_small_font.render("F5 to restart, ESC to quit", True, color2)
+    screen.fill(bg_color)
+    text_surface = very_small_font.render(
+        "F5 to restart, ESC to quit", True, loss_color
+    )
     screen.blit(text_surface, (600, 15))
     # Draw the word with underscores for unguessed letters
     displayed_word = "".join(
@@ -106,7 +111,9 @@ while running:
             l_x = -1
         if len(displayed_word) < 10:
             word_width = word_length * 50
-            text_surface = big_font.render(displayed_word[placed_letter], True, color1)
+            text_surface = big_font.render(
+                displayed_word[placed_letter], True, letter_color
+            )
             screen.blit(
                 text_surface,
                 (
@@ -119,7 +126,9 @@ while running:
             )
         elif len(displayed_word) <= 12:
             word_width = word_length * 40
-            text_surface = long_font.render(displayed_word[placed_letter], True, color1)
+            text_surface = long_font.render(
+                displayed_word[placed_letter], True, letter_color
+            )
             screen.blit(
                 text_surface,
                 (
@@ -132,7 +141,9 @@ while running:
             )
         else:
             word_width = word_length * 30
-            text_surface = font.render(displayed_word[placed_letter], True, color1)
+            text_surface = font.render(
+                displayed_word[placed_letter], True, letter_color
+            )
             screen.blit(
                 text_surface,
                 (
@@ -146,36 +157,36 @@ while running:
 
     # Draw the hangman on the left side
     if wrong_guesses >= 1:
-        pygame.draw.line(screen, color1, (10, 380), (190, 380), 5)
+        pygame.draw.line(screen, hangman_color, (10, 380), (190, 380), 5)
     if wrong_guesses >= 2:
-        pygame.draw.line(screen, color1, (100, 30), (100, 380), 5)
+        pygame.draw.line(screen, hangman_color, (100, 30), (100, 380), 5)
     if wrong_guesses >= 3:
-        pygame.draw.line(screen, color1, (200, 30), (100, 30), 5)
+        pygame.draw.line(screen, hangman_color, (200, 30), (100, 30), 5)
     if wrong_guesses >= 4:
-        pygame.draw.line(screen, color1, (200, 30), (200, 80), 5)
+        pygame.draw.line(screen, hangman_color, (200, 30), (200, 80), 5)
     if wrong_guesses >= 5:
-        pygame.draw.circle(screen, color1, (200, 105), 25, 5)
+        pygame.draw.circle(screen, hangman_color, (200, 105), 25, 5)
     if wrong_guesses >= 6:
-        pygame.draw.line(screen, color1, (200, 130), (200, 250), 5)
+        pygame.draw.line(screen, hangman_color, (200, 130), (200, 250), 5)
     if wrong_guesses >= 7:
-        pygame.draw.line(screen, color1, (200, 150), (170, 230), 5)
+        pygame.draw.line(screen, hangman_color, (200, 150), (170, 230), 5)
     if wrong_guesses >= 8:
-        pygame.draw.line(screen, color1, (200, 150), (230, 230), 5)
+        pygame.draw.line(screen, hangman_color, (200, 150), (230, 230), 5)
     if wrong_guesses >= 9:
-        pygame.draw.line(screen, color1, (200, 250), (170, 330), 5)
+        pygame.draw.line(screen, hangman_color, (200, 250), (170, 330), 5)
     if wrong_guesses >= 10:
-        pygame.draw.line(screen, color1, (200, 250), (230, 330), 5)
+        pygame.draw.line(screen, hangman_color, (200, 250), (230, 330), 5)
 
     # Display used letters
     used_letters_text = " ".join(sorted(guessed_letters))
-    text_surface = small_font.render(used_letters_text, True, color1)
+    text_surface = small_font.render(used_letters_text, True, letter_color)
     screen.blit(
         text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 150)
     )
 
     # Check for win/loss
     if "_" not in displayed_word:
-        text_surface = font.render("Congratulations! You won!", True, color2)
+        text_surface = font.render("Congratulations! You won!", True, loss_color)
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
