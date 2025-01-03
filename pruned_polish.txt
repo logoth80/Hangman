@@ -12810,7 +12810,6 @@ ejdetyk
 ejdetyzm
 ejektor
 ejektywny
-eka-pierwiastki
 ekierka
 ekipa
 eklektyczny
@@ -49723,8 +49722,6 @@ południce
 południe
 południk
 południkowy
-południo-wschód
-południo-zachód
 południowiec
 południowowschodni
 południowozachodni
@@ -54913,8 +54910,6 @@ północ
 północnowschodni
 północnozachodni
 północny
-północo-wschód
-północo-zachód
 półnumer
 półnuta
 półobrót
