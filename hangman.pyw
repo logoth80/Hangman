@@ -17,14 +17,14 @@ GREY = (120, 120, 120)
 
 def read_saved(key, filename="saved.txt"):
     try:
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding="UTF-8") as file:
             for line in file:
                 if line.strip():
                     k, v = line.split("=", 1)
                     if k.strip() == key:
                         return eval(v.strip())  # Safely interpret the value
     except FileNotFoundError:
-        with open(filename, "w") as file:
+        with open(filename, "w", encoding="UTF-8") as file:
             lines = []
             lines.append("highscore=0\n")
             lines.append("theme=1\n")
@@ -36,7 +36,7 @@ def read_saved(key, filename="saved.txt"):
 
             file.writelines(lines)
 
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding="UTF-8") as file:
             for line in file:
                 if line.strip():
                     k, v = line.split("=", 1)
@@ -50,7 +50,7 @@ def write_saved(key, value, filename="saved.txt"):
     lines = []
     found = False
     try:
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding="UTF-8") as file:
             for line in file:
                 if line.strip():
                     k, v = line.split("=", 1)
@@ -65,7 +65,7 @@ def write_saved(key, value, filename="saved.txt"):
     if not found:
         lines.append(f"{key}={repr(value)}\n")
 
-    with open(filename, "w") as file:
+    with open(filename, "w", encoding="UTF-8") as file:
         file.writelines(lines)
 
 
@@ -144,7 +144,6 @@ def load_dictionary(dictionary_selected):
 # Initialize game variables
 # selected_language = "polish"  #          DEFAULT LANGUAGE
 selected_language = read_saved("language")
-print(selected_language)
 word_list = load_dictionary(selected_language)
 current_word = random.choice(word_list)
 current_word = read_saved("current_word")
@@ -171,10 +170,8 @@ def reset_game():
     global current_word, guessed_letters, wrong_guesses, game_over, score, highscore
     if not game_over and wrong_guesses > 0:
         score = 0
-        print("reset score")
         write_saved("score", score)
     elif game_over and wrong_guesses >= 10:
-        print("reset score")
         write_saved("score", score)
         score = 0
         write_saved("guessed_letters", empty_guessed_letters)
@@ -215,7 +212,6 @@ while running:
                 and letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzżź"
             ):
                 guessed_letters.add(letter)
-                print(guessed_letters)
                 write_saved("guessed_letters", guessed_letters)
                 if letter in current_word and len(letter) == 1:
                     score += 1
@@ -228,7 +224,6 @@ while running:
                     write_saved("wrong_guesses", wrong_guesses)
                     winsound.Beep(400, 200)
                     if wrong_guesses >= max_wrong_guesses:
-                        print(score)
                         show_score = True
             if event.key == pygame.K_F2:
                 if selected_language == "english":
