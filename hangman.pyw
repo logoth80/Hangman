@@ -107,7 +107,7 @@ def load_color_theme(t):
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hangman Game")
-fps_target = 30
+fps_target = 12
 
 # Load font
 big_font = pygame.font.Font(None, 80)
