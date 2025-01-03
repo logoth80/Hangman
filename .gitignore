@@ -9,7 +9,7 @@ polish c.txt
 polish_unique_a.txt
 polish_unique_c.txt
 remove_dopes.py
-create polish.py
-filter.py
+create_polish.py
+filterwords.py
 saved.txt
 *.lnk
