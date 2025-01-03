@@ -24,7 +24,20 @@ def read_saved(key, filename="saved.txt"):
                     if k.strip() == key:
                         return eval(v.strip())  # Safely interpret the value
     except FileNotFoundError:
-        pass
+        with open(filename, "w") as file:
+            lines = []
+            lines.append("highscore=0\n")
+            lines.append("theme=1\n")
+            lines.append('language="english"\n')
+            file.writelines(lines)
+
+        with open(filename, "r") as file:
+            for line in file:
+                if line.strip():
+                    k, v = line.split("=", 1)
+                    if k.strip() == key:
+                        return eval(v.strip())  # Safely interpret the value
+
     return None
 
 
