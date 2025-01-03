@@ -29,6 +29,11 @@ def read_saved(key, filename="saved.txt"):
             lines.append("highscore=0\n")
             lines.append("theme=1\n")
             lines.append('language="english"\n')
+            lines.append("wrong_guesses=0\n")
+            lines.append("score=0\n")
+            lines.append("guessed_letters=set()\n")
+            lines.append("current_word='helicopter'\n")
+
             file.writelines(lines)
 
         with open(filename, "r") as file:
@@ -142,14 +147,19 @@ selected_language = read_saved("language")
 print(selected_language)
 word_list = load_dictionary(selected_language)
 current_word = random.choice(word_list)
+current_word = read_saved("current_word")
+empty_guessed_letters = set()
 guessed_letters = set()
-guessed_letters.clear()
+guessed_letters = read_saved("guessed_letters")
 wrong_guesses = 0
+wrong_guesses = read_saved("wrong_guesses")
 max_wrong_guesses = 10
 running = True
 game_over = False
 show_score = False
 score = 0
+if wrong_guesses < max_wrong_guesses:
+    score = read_saved("score")
 theme = read_saved("theme")
 highscore = read_saved("highscore")
 
@@ -162,18 +172,26 @@ def reset_game():
     if not game_over and wrong_guesses > 0:
         score = 0
         print("reset score")
+        write_saved("score", score)
     elif game_over and wrong_guesses >= 10:
         print("reset score")
+        write_saved("score", score)
         score = 0
+        write_saved("guessed_letters", empty_guessed_letters)
+        temp_word = random.choice(word_list)
+        write_saved("current_word", temp_word)
     elif game_over and wrong_guesses < max_wrong_guesses:
         score = score - wrong_guesses + 25 - len(current_word)
         if score > highscore:
             highscore = score
             write_saved("highscore", highscore)
     wrong_guesses = 0
+    write_saved("wrong_guesses", wrong_guesses)
     game_over = False
     current_word = random.choice(word_list)
+    write_saved("current_word", current_word)
     guessed_letters.clear()
+    write_saved("guessed_letters", guessed_letters)
 
 
 def next_theme():
@@ -197,13 +215,17 @@ while running:
                 and letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzżź"
             ):
                 guessed_letters.add(letter)
+                print(guessed_letters)
+                write_saved("guessed_letters", guessed_letters)
                 if letter in current_word and len(letter) == 1:
                     score += 1
+                    write_saved("score", score)
                     if score > highscore:
                         highscore = score
                         write_saved("highscore", highscore)
                 if letter not in current_word:
                     wrong_guesses += 1
+                    write_saved("wrong_guesses", wrong_guesses)
                     winsound.Beep(400, 200)
                     if wrong_guesses >= max_wrong_guesses:
                         print(score)
@@ -341,6 +363,8 @@ while running:
 
     # Check for win/loss
     if "_" not in displayed_word:
+        if not game_over:
+            write_saved("score", 0)
         game_over = True
         text_surface = font.render("Congratulations! You won!", True, loss_color)
         screen.blit(
