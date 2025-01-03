@@ -11,5 +11,6 @@ polish_unique_c.txt
 remove_dopes.py
 create_polish.py
 filterwords.py
+full_english.txt
 saved.txt
 *.lnk
