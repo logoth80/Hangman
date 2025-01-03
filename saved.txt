@@ -1,3 +1,0 @@
-highscore=7
-theme=4
-language='polish'
