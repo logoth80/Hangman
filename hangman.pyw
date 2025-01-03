@@ -88,7 +88,7 @@ def load_dictionary(dictionary_selected):
 
 
 # Initialize game variables
-selected_language = "polish"
+selected_language = "polish"  #          DEFAULT LANGUAGE
 word_list = load_dictionary("polish")
 current_word = random.choice(word_list)
 guessed_letters = set()
@@ -97,20 +97,32 @@ wrong_guesses = 0
 max_wrong_guesses = 10
 running = True
 game_over = False
-theme = 5
+show_score = False
+score = 0
+theme = 5  # DEFAULT THEME
+
+
 load_color_theme(theme)
 
 
 # Function to reset the game
 def reset_game():
-    global current_word, guessed_letters, wrong_guesses, game_over
-    current_word = random.choice(word_list)
-    guessed_letters.clear()
+    global current_word, guessed_letters, wrong_guesses, game_over, score
+    if not game_over and wrong_guesses > 0:
+        score = 0
+        print("reset score")
+    elif game_over and wrong_guesses >= 10:
+        print("reset score")
+        score = 0
+    elif game_over and wrong_guesses < max_wrong_guesses:
+        score = score - wrong_guesses + 25 - len(current_word)
     wrong_guesses = 0
     game_over = False
+    current_word = random.choice(word_list)
+    guessed_letters.clear()
 
 
-def change_theme():
+def next_theme():
     global theme
     theme += 1
     load_color_theme(theme)
@@ -130,9 +142,14 @@ while running:
                 and letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzżź"
             ):
                 guessed_letters.add(letter)
+                if letter in current_word:
+                    score += 1
                 if letter not in current_word:
                     wrong_guesses += 1
                     winsound.Beep(400, 200)
+                    if wrong_guesses >= max_wrong_guesses:
+                        print(score)
+                        show_score = True
             if event.key == pygame.K_F2:
                 if selected_language == "english":
                     selected_language = "polish"
@@ -141,7 +158,7 @@ while running:
                 word_list = load_dictionary(selected_language)
                 reset_game()
             if event.key == pygame.K_F3:
-                change_theme()
+                next_theme()
             if event.key == pygame.K_F5:  # Restart game with F5 key
                 reset_game()
             if event.key == pygame.K_ESCAPE:
@@ -161,7 +178,17 @@ while running:
         True,
         hangman_color,
     )
+
     screen.blit(text_surface, (WIDTH // 2, 15))
+    text_surface = very_small_font.render(
+        f"score: {score}",
+        True,
+        hangman_color,
+    )
+    screen.blit(
+        text_surface,
+        (WIDTH - 5 - text_surface.get_width(), HEIGHT - 5 - text_surface.get_height()),
+    )
 
     # Draw the word with underscores for unguessed letters
     displayed_word = "".join(
@@ -241,15 +268,28 @@ while running:
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
         )
+        text_surface = font.render(
+            f"Your score: {score-wrong_guesses+25-len(current_word)}", True, loss_color
+        )
+        screen.blit(
+            text_surface,
+            (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 260),
+        )
     elif wrong_guesses == max_wrong_guesses:
         game_over = True
         text_surface = font.render(
-            f"Game Over! The word was {current_word}.", True, RED
+            f"Game Over! The word was {current_word}.", True, loss_color
         )
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
         )
+        if show_score:
+            text_surface = font.render(f"Your score: {score}", True, loss_color)
+            screen.blit(
+                text_surface,
+                (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 260),
+            )
 
     # Update the display
     pygame.display.flip()
