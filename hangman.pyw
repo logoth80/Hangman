@@ -312,25 +312,25 @@ while running:
             )
     # Draw the hangman on the left side
     if wrong_guesses >= 1:
-        pygame.draw.line(screen, hangman_color, (10, 380), (190, 380), 5)
+        pygame.draw.line(screen, hangman_color, (10, 370), (190, 370), 5)
     if wrong_guesses >= 2:
-        pygame.draw.line(screen, hangman_color, (100, 30), (100, 380), 5)
+        pygame.draw.line(screen, hangman_color, (100, 60), (100, 370), 5)
     if wrong_guesses >= 3:
-        pygame.draw.line(screen, hangman_color, (200, 30), (100, 30), 5)
+        pygame.draw.line(screen, hangman_color, (200, 60), (100, 60), 5)
     if wrong_guesses >= 4:
-        pygame.draw.line(screen, hangman_color, (200, 30), (200, 80), 5)
+        pygame.draw.line(screen, hangman_color, (200, 60), (200, 110), 5)
     if wrong_guesses >= 5:
-        pygame.draw.circle(screen, hangman_color, (200, 105), 25, 5)
+        pygame.draw.circle(screen, hangman_color, (200, 135), 25, 5)
     if wrong_guesses >= 6:
-        pygame.draw.line(screen, hangman_color, (200, 130), (200, 250), 5)
+        pygame.draw.line(screen, hangman_color, (200, 160), (200, 230), 5)
     if wrong_guesses >= 7:
-        pygame.draw.line(screen, hangman_color, (200, 150), (170, 230), 5)
+        pygame.draw.line(screen, hangman_color, (200, 170), (170, 230), 5)
     if wrong_guesses >= 8:
-        pygame.draw.line(screen, hangman_color, (200, 150), (230, 230), 5)
+        pygame.draw.line(screen, hangman_color, (200, 170), (230, 230), 5)
     if wrong_guesses >= 9:
-        pygame.draw.line(screen, hangman_color, (200, 250), (170, 330), 5)
+        pygame.draw.line(screen, hangman_color, (200, 230), (170, 310), 5)
     if wrong_guesses >= 10:
-        pygame.draw.line(screen, hangman_color, (200, 250), (230, 330), 5)
+        pygame.draw.line(screen, hangman_color, (200, 230), (230, 310), 5)
 
     # Display used letters
     used_letters_text = " ".join(sorted(guessed_letters))
