@@ -107,6 +107,7 @@ def load_color_theme(t):
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hangman Game")
+fps_target = 30
 
 # Load font
 big_font = pygame.font.Font(None, 80)
@@ -171,7 +172,7 @@ def reset_game():
     if not game_over and wrong_guesses > 0:
         score = 0
         write_saved("score", score)
-    elif game_over and wrong_guesses >= 10:
+    elif game_over and wrong_guesses >= max_wrong_guesses:
         write_saved("score", score)
         score = 0
         write_saved("guessed_letters", empty_guessed_letters)
@@ -179,6 +180,7 @@ def reset_game():
         write_saved("current_word", temp_word)
     elif game_over and wrong_guesses < max_wrong_guesses:
         score = score - wrong_guesses + 25 - len(current_word)
+        write_saved("score", score)
         if score > highscore:
             highscore = score
             write_saved("highscore", highscore)
@@ -198,6 +200,7 @@ def next_theme():
     write_saved("theme", theme)
 
 
+clock = pygame.time.Clock()
 # Game loop
 while running:
     for event in pygame.event.get():
@@ -359,7 +362,7 @@ while running:
     # Check for win/loss
     if "_" not in displayed_word:
         if not game_over:
-            write_saved("score", 0)
+            write_saved("score", score)
         game_over = True
         text_surface = font.render("Congratulations! You won!", True, loss_color)
         screen.blit(
@@ -374,6 +377,8 @@ while running:
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 260),
         )
     elif wrong_guesses == max_wrong_guesses:
+        if not game_over:
+            write_saved("score", 0)
         game_over = True
         text_surface = font.render(
             f"Game Over! The word was {current_word}.", True, loss_color
@@ -391,6 +396,6 @@ while running:
 
     # Update the display
     pygame.display.flip()
-
+    clock.tick(fps_target)
 # Quit Pygame
 pygame.quit()
