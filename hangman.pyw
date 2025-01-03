@@ -15,6 +15,42 @@ RED = (255, 0, 0)
 GREY = (120, 120, 120)
 
 
+def read_saved(key, filename="saved.txt"):
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                if line.strip():
+                    k, v = line.split("=", 1)
+                    if k.strip() == key:
+                        return eval(v.strip())  # Safely interpret the value
+    except FileNotFoundError:
+        pass
+    return None
+
+
+def write_saved(key, value, filename="saved.txt"):
+    lines = []
+    found = False
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                if line.strip():
+                    k, v = line.split("=", 1)
+                    if k.strip() == key:
+                        lines.append(f"{key}={repr(value)}\n")
+                        found = True
+                    else:
+                        lines.append(line)
+    except FileNotFoundError:
+        pass
+
+    if not found:
+        lines.append(f"{key}={repr(value)}\n")
+
+    with open(filename, "w") as file:
+        file.writelines(lines)
+
+
 def load_color_theme(t):
     global hangman_color, loss_color, letter_color, bg_color, theme
     if t == 2:
@@ -88,8 +124,10 @@ def load_dictionary(dictionary_selected):
 
 
 # Initialize game variables
-selected_language = "polish"  #          DEFAULT LANGUAGE
-word_list = load_dictionary("polish")
+# selected_language = "polish"  #          DEFAULT LANGUAGE
+selected_language = read_saved("language")
+print(selected_language)
+word_list = load_dictionary(selected_language)
 current_word = random.choice(word_list)
 guessed_letters = set()
 guessed_letters.clear()
@@ -99,15 +137,15 @@ running = True
 game_over = False
 show_score = False
 score = 0
-theme = 5  # DEFAULT THEME
-
+theme = read_saved("theme")
+highscore = read_saved("highscore")
 
 load_color_theme(theme)
 
 
 # Function to reset the game
 def reset_game():
-    global current_word, guessed_letters, wrong_guesses, game_over, score
+    global current_word, guessed_letters, wrong_guesses, game_over, score, highscore
     if not game_over and wrong_guesses > 0:
         score = 0
         print("reset score")
@@ -116,6 +154,9 @@ def reset_game():
         score = 0
     elif game_over and wrong_guesses < max_wrong_guesses:
         score = score - wrong_guesses + 25 - len(current_word)
+        if score > highscore:
+            highscore = score
+            write_saved("highscore", highscore)
     wrong_guesses = 0
     game_over = False
     current_word = random.choice(word_list)
@@ -126,6 +167,7 @@ def next_theme():
     global theme
     theme += 1
     load_color_theme(theme)
+    write_saved("theme", theme)
 
 
 # Game loop
@@ -142,8 +184,11 @@ while running:
                 and letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzżź"
             ):
                 guessed_letters.add(letter)
-                if letter in current_word:
+                if letter in current_word and len(letter) == 1:
                     score += 1
+                    if score > highscore:
+                        highscore = score
+                        write_saved("highscore", highscore)
                 if letter not in current_word:
                     wrong_guesses += 1
                     winsound.Beep(400, 200)
@@ -153,8 +198,10 @@ while running:
             if event.key == pygame.K_F2:
                 if selected_language == "english":
                     selected_language = "polish"
+                    write_saved("language", selected_language)
                 elif selected_language == "polish":
                     selected_language = "english"
+                    write_saved("language", selected_language)
                 word_list = load_dictionary(selected_language)
                 reset_game()
             if event.key == pygame.K_F3:
@@ -180,14 +227,33 @@ while running:
     )
 
     screen.blit(text_surface, (WIDTH // 2, 15))
-    text_surface = very_small_font.render(
+
+    if score == highscore:
+        tempcolor = RED
+    else:
+        tempcolor = hangman_color
+
+    text_surface = small_font.render(
         f"score: {score}",
+        True,
+        tempcolor,
+    )
+    screen.blit(
+        text_surface,
+        (WIDTH - 5 - text_surface.get_width(), HEIGHT - 5 - text_surface.get_height()),
+    )
+
+    text_surface = very_small_font.render(
+        f"high score: {highscore}",
         True,
         hangman_color,
     )
     screen.blit(
         text_surface,
-        (WIDTH - 5 - text_surface.get_width(), HEIGHT - 5 - text_surface.get_height()),
+        (
+            WIDTH - 160 - text_surface.get_width(),
+            HEIGHT - 5 - text_surface.get_height(),
+        ),
     )
 
     # Draw the word with underscores for unguessed letters

@@ -1,0 +1,3 @@
+highscore=33
+theme=5
+language='polish'
