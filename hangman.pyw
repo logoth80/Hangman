@@ -127,7 +127,7 @@ while running:
             if (
                 letter not in guessed_letters
                 and not game_over
-                and letter in "aąbcćdeęfghijklłmnńoópqrstuvwxyzżź"
+                and letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzżź"
             ):
                 guessed_letters.add(letter)
                 if letter not in current_word:
