@@ -1,4 +1,4 @@
-def word_letter_composition(file_path):
+def word_letter_composition(file_path, min_leng, max_leng):
     # Initialize a dictionary to count the number of words containing each letter
     letter_word_counts = {letter: 0 for letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwyzźż"}
     total_words = 0
@@ -8,7 +8,11 @@ def word_letter_composition(file_path):
             for word in line.split():
                 # Remove punctuation and convert to lowercase
                 clean_word = "".join(char for char in word if char.isalpha()).lower()
-                if clean_word:  # Only process non-empty words
+                if (
+                    clean_word
+                    and len(clean_word) >= min_leng
+                    and len(clean_word) <= max_leng
+                ):  # Only process non-empty words
                     total_words += 1
                     # Check which letters are present in the word
                     unique_letters = set(clean_word)
@@ -32,6 +36,8 @@ def word_letter_composition(file_path):
 
 # Example usage:
 file_path = "pruned_polish.txt"  # Replace with your file path
-result = word_letter_composition(file_path)
+result = word_letter_composition(file_path, 1, 99)
 for letter, probability in result:
-    print(f"'{letter}': {probability:.2f}%    - 1 in {(100/(probability)):.0f}")
+    print(
+        f"'{letter}': {probability:.2f}%    - 10 in {(1000/(0.000000000001+probability)):.0f}"
+    )
