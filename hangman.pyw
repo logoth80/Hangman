@@ -15,6 +15,12 @@ RED = (255, 0, 0)
 GREY = (120, 120, 120)
 
 
+# onexit function
+def onexit():
+    pygame.quit()
+    sys.exit(0)
+
+
 def read_saved(key, filename="saved.txt"):
     try:
         with open(filename, "r", encoding="UTF-8") as file:
@@ -95,6 +101,12 @@ def load_color_theme(t):
         loss_color = (147, 149, 152)
         letter_color = (104, 0, 33)
         bg_color = (0, 0, 0)
+    elif t == 6:
+        # color theme6
+        hangman_color = (200, 200, 200)
+        loss_color = (247, 149, 152)
+        letter_color = (220, 220, 220)
+        bg_color = (0, 50, 65)
     else:
         theme = 1
         # color theme1
@@ -107,7 +119,7 @@ def load_color_theme(t):
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hangman Game")
-fps_target = 12
+fps_target = 24
 
 # Load font
 big_font = pygame.font.Font(None, 80)
@@ -173,13 +185,13 @@ def reset_game():
         score = 0
         write_saved("score", score)
     elif game_over and wrong_guesses >= max_wrong_guesses:
-        write_saved("score", score)
         score = 0
+        write_saved("score", score)
         write_saved("guessed_letters", empty_guessed_letters)
         temp_word = random.choice(word_list)
         write_saved("current_word", temp_word)
     elif game_over and wrong_guesses < max_wrong_guesses:
-        score = score - wrong_guesses + 25 - len(current_word)
+        score = score - wrong_guesses + 45 - 2 * len(current_word)
         write_saved("score", score)
         if score > highscore:
             highscore = score
@@ -364,13 +376,15 @@ while running:
         if not game_over:
             write_saved("score", score)
         game_over = True
-        text_surface = font.render("Congratulations! You won!", True, loss_color)
+        text_surface = font.render("Great! F5 to continue!", True, loss_color)
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
         )
         text_surface = font.render(
-            f"Your score: {score-wrong_guesses+25-len(current_word)}", True, loss_color
+            f"Your score: {score-wrong_guesses+45-2*len(current_word)}",
+            True,
+            loss_color,
         )
         screen.blit(
             text_surface,
