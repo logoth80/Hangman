@@ -488,7 +488,6 @@ agronomówka
 agrotechniczny
 agrotechnik
 agrotechnika
-agrúment
 aguti
 ahistoryczność
 ahistoryczny
@@ -2568,9 +2567,6 @@ atropinowy
 atrybucja
 atrybut
 atrybutywny
-attachat
-attachú
-attycki
 attycyzm
 attyka
 attykowy
@@ -4955,7 +4951,6 @@ botriomykoza
 botulizm
 botwina
 botwinka
-bouclú
 boćwina
 boćwinka
 bożek
@@ -7617,7 +7612,6 @@ cosinus
 cosinusoida
 cotangens
 cotangensoida
-coupú
 cowboy
 cowboyski
 cracoviana
@@ -12472,8 +12466,6 @@ dzwonnik
 dzwonowy
 dzyndzyk
 dójka
-dúmarche
-dúsintúressement
 dąbczak
 dąbek
 dąbrowa
@@ -13982,7 +13974,7 @@ ewoluujący
 eworsja
 eworsyjny
 exodus
-exposú
+expose
 expres
 ezofagoskop
 ezofagoskopia
@@ -15391,7 +15383,6 @@ froterowanie
 froterowany
 froterujący
 frotowy
-frottú
 fruktoza
 frunięcie
 frustracja
@@ -54707,7 +54698,6 @@ purytanizm
 purytanka
 purytański
 puryzm
-purúe
 pustak
 pustakowy
 pustawy
@@ -60502,7 +60492,6 @@ skierowywany
 skiełkowany
 skifista
 skifistka
-skikjúring
 skiksowanie
 skiksowany
 skinienie
@@ -65892,7 +65881,6 @@ totolotek
 totolotkowy
 totumfacki
 totus
-tournúe
 towar
 towarowiec
 towarowość
@@ -69317,7 +69305,6 @@ użęty
 vacat
 vademecum
 varia
-variútús
 varsaviana
 varsavianista
 varsavianistka
