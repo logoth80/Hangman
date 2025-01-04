@@ -38,6 +38,7 @@ def read_saved(key, filename="saved.txt"):
             lines.append("wrong_guesses=0\n")
             lines.append("score=0\n")
             lines.append("guessed_letters=set()\n")
+            lines.append("correct_letters=set()\n")
             lines.append("current_word='helicopter'\n")
 
             file.writelines(lines)
@@ -162,6 +163,8 @@ current_word = random.choice(word_list)
 current_word = read_saved("current_word")
 empty_guessed_letters = set()
 guessed_letters = set()
+correct_letters = set()
+correct_letters = read_saved("correct_letters")
 guessed_letters = read_saved("guessed_letters")
 wrong_guesses = 0
 wrong_guesses = read_saved("wrong_guesses")
@@ -180,13 +183,21 @@ load_color_theme(theme)
 
 # Function to reset the game
 def reset_game():
-    global current_word, guessed_letters, wrong_guesses, game_over, score, highscore
+    global \
+        current_word, \
+        guessed_letters, \
+        correct_letters, \
+        wrong_guesses, \
+        game_over, \
+        score, \
+        highscore
     if not game_over and wrong_guesses > 0:
         score = 0
         write_saved("score", score)
     elif game_over and wrong_guesses >= max_wrong_guesses:
         score = 0
         write_saved("score", score)
+        write_saved("correct_letters", empty_guessed_letters)
         write_saved("guessed_letters", empty_guessed_letters)
         temp_word = random.choice(word_list)
         write_saved("current_word", temp_word)
@@ -202,7 +213,9 @@ def reset_game():
     current_word = random.choice(word_list)
     write_saved("current_word", current_word)
     guessed_letters.clear()
+    correct_letters.clear()
     write_saved("guessed_letters", guessed_letters)
+    write_saved("correct_letters", correct_letters)
 
 
 def next_theme():
@@ -230,6 +243,8 @@ while running:
                 write_saved("guessed_letters", guessed_letters)
                 if letter in current_word and len(letter) == 1:
                     score += 1
+                    correct_letters.add(letter)
+                    write_saved("correct_letters", correct_letters)
                     write_saved("score", score)
                     if score > highscore:
                         highscore = score
@@ -366,6 +381,13 @@ while running:
 
     # Display used letters
     used_letters_text = " ".join(sorted(guessed_letters))
+
+    # capitalie correct
+    def capitalize_selected(string, letter_set):
+        return "".join(char.upper() if char in letter_set else char for char in string)
+
+    # used_letters_text = capitalize_selected(used_letters_text, correct_letters)
+
     text_surface = small_font.render(used_letters_text, True, letter_color)
     screen.blit(
         text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 150)
