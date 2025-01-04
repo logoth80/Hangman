@@ -2,6 +2,7 @@ import pygame
 import random
 import winsound
 import sys
+import locale
 
 # Initialize Pygame
 pygame.init()
@@ -158,6 +159,7 @@ def load_dictionary(dictionary_selected):
 # Initialize game variables
 # selected_language = "polish"  #          DEFAULT LANGUAGE
 selected_language = read_saved("language")
+locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")  # sort rules
 word_list = load_dictionary(selected_language)
 current_word = random.choice(word_list)
 current_word = read_saved("current_word")
@@ -380,7 +382,7 @@ while running:
         pygame.draw.line(screen, hangman_color, (200, 230), (230, 310), 5)
 
     # Display used letters
-    used_letters_text = " ".join(sorted(guessed_letters))
+    used_letters_text = " ".join(sorted(guessed_letters, key=locale.strxfrm))
 
     # capitalie correct
     def capitalize_selected(string, letter_set):
