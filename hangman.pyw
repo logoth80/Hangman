@@ -136,8 +136,8 @@ def load_dictionary(dictionary_selected):
             if len(parts) >= 0:
                 word = parts[0]
 
-                # Check if the word is not capitalized and has at least 5 letters
-                if not word.isupper() and len(word) >= 5:
+                # Check if the word is not capitalized and has 5-18 charactersa
+                if not word.isupper() and len(word) >= 5 and len(word) <= 18:
                     word_list.append(word)
     return word_list
 

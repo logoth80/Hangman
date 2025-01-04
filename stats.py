@@ -34,6 +34,19 @@ def word_letter_composition(file_path, min_leng, max_leng):
     return sorted_probabilities
 
 
+def find_longest_word(file):
+    longest_length = 0
+    longest_word = ""
+    with open(file, "r", encoding="UTF-8") as f:
+        for line in f:
+            words = line.split()
+            for word in words:
+                if len(word) > longest_length:
+                    longest_length = len(word)
+                    longest_word = word
+    return longest_word
+
+
 # Example usage:
 file_path = "pruned_polish.txt"  # Replace with your file path
 result = word_letter_composition(file_path, 1, 99)
@@ -41,3 +54,6 @@ for letter, probability in result:
     print(
         f"'{letter}': {probability:.2f}%    - 10 in {(1000/(0.000000000001+probability)):.0f}"
     )
+
+longest_word = find_longest_word(file_path)
+print(f"longest word is: {longest_word} and has {len(longest_word)} letters")
