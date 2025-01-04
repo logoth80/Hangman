@@ -4,19 +4,7 @@ import winsound
 import sys
 import locale
 
-# Initialize Pygame
-pygame.init()
 
-# Constants
-WIDTH, HEIGHT = 800, 600
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-GREY = (120, 120, 120)
-
-
-# onexit function
 def onexit():
     pygame.quit()
     sys.exit(0)
@@ -41,16 +29,13 @@ def read_saved(key, filename="saved.txt"):
             lines.append("guessed_letters=set()\n")
             lines.append("correct_letters=set()\n")
             lines.append("current_word='helicopter'\n")
-
             file.writelines(lines)
-
         with open(filename, "r", encoding="UTF-8") as file:
             for line in file:
                 if line.strip():
                     k, v = line.split("=", 1)
                     if k.strip() == key:
                         return eval(v.strip())  # Safely interpret the value
-
     return None
 
 
@@ -69,10 +54,8 @@ def write_saved(key, value, filename="saved.txt"):
                         lines.append(line)
     except FileNotFoundError:
         pass
-
     if not found:
         lines.append(f"{key}={repr(value)}\n")
-
     with open(filename, "w", encoding="UTF-8") as file:
         file.writelines(lines)
 
@@ -118,69 +101,25 @@ def load_color_theme(t):
         bg_color = (255, 208, 141)
 
 
-# Set up the display
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Hangman Game")
-fps_target = 24
-
-# Load font
-big_font = pygame.font.Font(None, 80)
-long_font = pygame.font.Font(None, 60)
-font = pygame.font.Font(None, 48)
-small_font = pygame.font.Font(None, 36)
-very_small_font = pygame.font.Font(None, 16)
-
-
 def load_dictionary(dictionary_selected):
     # Read the dictionary from file
     word_list = []
-
     if dictionary_selected == "polish":
         dictionary_file = "pruned_polish.txt"
     elif dictionary_selected == "english":
         dictionary_file = "pruned_english.txt"
     else:
         dictionary_file = "pruned_polish.txt"
-
     with open(dictionary_file, "r", encoding="UTF-8") as file:
         for line in file:
             # Split the line by ';'
             parts = line.strip().split(";")
-
             if len(parts) >= 0:
                 word = parts[0]
-
                 # Check if the word is not capitalized and has 5-18 charactersa
                 if not word.isupper() and len(word) >= 5 and len(word) <= 18:
                     word_list.append(word)
     return word_list
-
-
-# Initialize game variables
-# selected_language = "polish"  #          DEFAULT LANGUAGE
-selected_language = read_saved("language")
-locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")  # sort rules
-word_list = load_dictionary(selected_language)
-current_word = random.choice(word_list)
-current_word = read_saved("current_word")
-empty_guessed_letters = set()
-guessed_letters = set()
-correct_letters = set()
-correct_letters = read_saved("correct_letters")
-guessed_letters = read_saved("guessed_letters")
-wrong_guesses = 0
-wrong_guesses = read_saved("wrong_guesses")
-max_wrong_guesses = 10
-running = True
-game_over = False
-show_score = False
-score = 0
-if wrong_guesses < max_wrong_guesses:
-    score = read_saved("score")
-theme = read_saved("theme")
-highscore = read_saved("highscore")
-
-load_color_theme(theme)
 
 
 # Function to reset the game
@@ -227,6 +166,54 @@ def next_theme():
     write_saved("theme", theme)
 
 
+# Initialize Pygame
+pygame.init()
+
+# Constants
+WIDTH, HEIGHT = 800, 600
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+GREY = (120, 120, 120)
+
+# Set up the display
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Hangman Game")
+fps_target = 24
+
+# fonts
+big_font = pygame.font.Font(None, 80)
+long_font = pygame.font.Font(None, 60)
+font = pygame.font.Font(None, 48)
+small_font = pygame.font.Font(None, 36)
+very_small_font = pygame.font.Font(None, 16)
+
+selected_language = read_saved("language")
+locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")  # sort rules
+word_list = load_dictionary(selected_language)
+current_word = random.choice(word_list)
+current_word = read_saved("current_word")
+empty_guessed_letters = set()
+guessed_letters = set()
+correct_letters = set()
+correct_letters = read_saved("correct_letters")
+guessed_letters = read_saved("guessed_letters")
+wrong_guesses = 0
+wrong_guesses = read_saved("wrong_guesses")
+max_wrong_guesses = 10
+running = True
+game_over = False
+show_score = False
+score = 0
+if wrong_guesses < max_wrong_guesses:
+    score = read_saved("score")
+theme = read_saved("theme")
+highscore = read_saved("highscore")
+
+load_color_theme(theme)
+
 clock = pygame.time.Clock()
 # Game loop
 while running:
@@ -235,7 +222,6 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             letter = event.unicode.lower()
-            # letter = pygame.key.name(event.key).lower()
             if (
                 letter not in guessed_letters
                 and not game_over
