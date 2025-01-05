@@ -10,6 +10,12 @@ def onexit():
     sys.exit(0)
 
 
+# function to add word to the history.txt
+def Add_history(word, file="history.txt"):
+    with open(file, "a", encoding="utf-8") as f:
+        f.write(word + "\n")
+
+
 def read_saved(key, filename="saved.txt"):
     try:
         with open(filename, "r", encoding="UTF-8") as file:
@@ -153,6 +159,7 @@ def reset_game():
     game_over = False
     current_word = random.choice(word_list)
     write_saved("current_word", current_word)
+    Add_history(current_word)
     guessed_letters.clear()
     correct_letters.clear()
     write_saved("guessed_letters", guessed_letters)
@@ -180,7 +187,7 @@ GREY = (120, 120, 120)
 
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Hangman Game")
+pygame.display.set_caption("Hangman")
 fps_target = 24
 
 # fonts
@@ -256,17 +263,21 @@ while running:
                 next_theme()
             if event.key == pygame.K_F5:  # Restart game with F5 key
                 reset_game()
+            if event.key == pygame.K_SPACE and game_over:  # new word
+                reset_game()
+            if event.key == pygame.K_RETURN and game_over:  # new word
+                reset_game()
             if event.key == pygame.K_ESCAPE:
                 sys.exit()
 
     # Clear the screen
     screen.fill(bg_color)
     text_surface = very_small_font.render(
-        "F3 to recolor, F5 to restart, ESC to quit",
+        "F3 to recolor, F5 new game, ESC to quit",
         True,
         loss_color,
     )
-    screen.blit(text_surface, (WIDTH - 220, 15))
+    screen.blit(text_surface, (WIDTH - text_surface.get_width() - 5, 15))
 
     text_surface = very_small_font.render(
         f"F2  {selected_language}",
@@ -386,7 +397,7 @@ while running:
         if not game_over:
             write_saved("score", score)
         game_over = True
-        text_surface = font.render("Great! F5 to continue!", True, loss_color)
+        text_surface = font.render("Great!   <Space> to continue...", True, loss_color)
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
