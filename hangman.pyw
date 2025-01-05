@@ -6,11 +6,6 @@ import locale
 import webbrowser
 
 
-def onexit():
-    pygame.quit()
-    sys.exit(0)
-
-
 # function to add word to the history.txt
 def Add_history(word, file="history.txt"):
     with open(file, "a", encoding="utf-8") as f:
