@@ -3,6 +3,7 @@ import random
 import winsound
 import sys
 import locale
+import webbrowser
 
 
 def onexit():
@@ -126,6 +127,12 @@ def load_dictionary(dictionary_selected):
                 if not word.isupper() and len(word) >= 5 and len(word) <= 18:
                     word_list.append(word)
     return word_list
+
+
+def explain_word(my_word):
+    url = "https://www.google.com/search?q=co+to+jest+" + my_word
+    webbrowser.open(url, new=2)  # opens in a new window
+    return None
 
 
 # Function to reset the game
@@ -259,6 +266,8 @@ while running:
                     write_saved("language", selected_language)
                 word_list = load_dictionary(selected_language)
                 reset_game()
+            if event.key == pygame.K_F1 and game_over:
+                explain_word(current_word)
             if event.key == pygame.K_F3:
                 next_theme()
             if event.key == pygame.K_F5:  # Restart game with F5 key
@@ -397,7 +406,9 @@ while running:
         if not game_over:
             write_saved("score", score)
         game_over = True
-        text_surface = font.render("Great!   <Space> to continue...", True, loss_color)
+        text_surface = font.render(
+            "Great!   <Space> to continue... (F1)", True, loss_color
+        )
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
@@ -416,7 +427,7 @@ while running:
             write_saved("score", 0)
         game_over = True
         text_surface = font.render(
-            f"Game Over! The word was {current_word}.", True, loss_color
+            f"Game Over! The word was {current_word}. (F1)", True, loss_color
         )
         screen.blit(
             text_surface,
