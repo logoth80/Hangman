@@ -148,6 +148,42 @@ def load_color_theme(t):
         loss_color = (147, 255, 130)
         letter_color = (200, 220, 255)
         bg_color = (48, 83, 75)
+    elif t == 8:
+        # color theme8
+        bg_color = (int("7f", 16), int("58", 16), int("af", 16))
+        loss_color = (int("e8", 16), int("4d", 16), int("8a", 16))
+        letter_color = (int("64", 16), int("c5", 16), int("eb", 16))
+        hangman_color = (int("fe", 16), int("b3", 16), int("26", 16))
+    elif t == 9:
+        # color theme8
+        bg_color = (int("67", 16), int("4a", 16), int("40", 16))
+        loss_color = (int("f9", 16), int("53", 16), int("35", 16))
+        letter_color = (int("fc", 16), int("af", 16), int("38", 16))
+        hangman_color = (int("50", 16), int("a3", 16), int("a4", 16))
+    elif t == 10:
+        # color theme10
+        bg_color = (int("ec", 16), int("e6", 16), int("cd", 16))
+        loss_color = (int("f9", 16), int("ac", 16), int("67", 16))
+        letter_color = (int("ee", 16), int("6a", 16), int("59", 16))
+        hangman_color = (int("3a", 16), int("3f", 16), int("58", 16))
+    elif t == 11:
+        # color theme11
+        bg_color = (int("82", 16), int("ac", 16), int("26", 16))
+        letter_color = (int("ff", 16), int("a2", 16), int("2a", 16))
+        loss_color = (int("ff", 16), int("66", 16), int("2a", 16))
+        hangman_color = (int("4f", 16), int("3f", 16), int("84", 16))
+    elif t == 12:
+        # color theme12
+        bg_color = (int("f7", 16), int("f2", 16), int("da", 16))
+        loss_color = (int("fa", 16), int("87", 16), int("71", 16))
+        letter_color = (int("80", 16), int("43", 16), int("72", 16))
+        hangman_color = (int("ca", 16), int("dd", 16), int("64", 16))
+    elif t == 13:
+        # color theme13
+        hangman_color = (43, 106, 108)
+        loss_color = (184, 13, 72)
+        letter_color = (242, 151, 36)
+        bg_color = (64, 64, 64)
     else:
         theme = 1
         # color theme1
@@ -417,27 +453,31 @@ while running:
                     200,
                 ),
             )
-    # Draw the hangman on the left side
-    if wrong_guesses >= 1:
-        pygame.draw.line(screen, hangman_color, (10, 370), (190, 370), 5)
-    if wrong_guesses >= 2:
-        pygame.draw.line(screen, hangman_color, (100, 60), (100, 370), 5)
-    if wrong_guesses >= 3:
-        pygame.draw.line(screen, hangman_color, (200, 60), (100, 60), 5)
-    if wrong_guesses >= 4:
-        pygame.draw.line(screen, hangman_color, (200, 60), (200, 110), 5)
-    if wrong_guesses >= 5:
-        pygame.draw.circle(screen, hangman_color, (200, 135), 25, 5)
-    if wrong_guesses >= 6:
-        pygame.draw.line(screen, hangman_color, (200, 160), (200, 230), 5)
-    if wrong_guesses >= 7:
-        pygame.draw.line(screen, hangman_color, (200, 170), (170, 230), 5)
-    if wrong_guesses >= 8:
-        pygame.draw.line(screen, hangman_color, (200, 170), (230, 230), 5)
-    if wrong_guesses >= 9:
-        pygame.draw.line(screen, hangman_color, (200, 230), (170, 310), 5)
-    if wrong_guesses >= 10:
-        pygame.draw.line(screen, hangman_color, (200, 230), (230, 310), 5)
+
+    def draw_hangman():
+        # Draw the hangman on the left side
+        if wrong_guesses >= 1:
+            pygame.draw.line(screen, hangman_color, (10, 370), (190, 370), 5)
+        if wrong_guesses >= 2:
+            pygame.draw.line(screen, hangman_color, (100, 60), (100, 370), 5)
+        if wrong_guesses >= 3:
+            pygame.draw.line(screen, hangman_color, (200, 60), (100, 60), 5)
+        if wrong_guesses >= 4:
+            pygame.draw.line(screen, hangman_color, (200, 60), (200, 110), 5)
+        if wrong_guesses >= 5:
+            pygame.draw.circle(screen, hangman_color, (200, 135), 25, 5)
+        if wrong_guesses >= 6:
+            pygame.draw.line(screen, hangman_color, (200, 160), (200, 230), 5)
+        if wrong_guesses >= 7:
+            pygame.draw.line(screen, hangman_color, (200, 170), (170, 230), 5)
+        if wrong_guesses >= 8:
+            pygame.draw.line(screen, hangman_color, (200, 170), (230, 230), 5)
+        if wrong_guesses >= 9:
+            pygame.draw.line(screen, hangman_color, (200, 230), (170, 310), 5)
+        if wrong_guesses >= 10:
+            pygame.draw.line(screen, hangman_color, (200, 230), (230, 310), 5)
+
+    draw_hangman()
 
     # Display used letters
     used_letters_text = " ".join(sorted(guessed_letters, key=locale.strxfrm))
@@ -459,7 +499,7 @@ while running:
             write_saved("score", score)
         game_over = True
         text_surface = font.render(
-            "Great!   <Space> to continue... (F1)", True, loss_color
+            "Great!   Space to continue... (F1)", True, loss_color
         )
         screen.blit(
             text_surface,
