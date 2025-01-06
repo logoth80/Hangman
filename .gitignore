@@ -1,7 +1,7 @@
 .ideas/
 dist/
 build/
-*.specs
+*.spec
 english.txt
 odm.txt
 polish a.txt
