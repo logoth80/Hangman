@@ -4,6 +4,46 @@ import winsound
 import sys
 import locale
 import webbrowser
+import re
+
+
+def find_words(has, hasnot, length):
+    # Convert `has` to a set of required letters
+    required_letters = has
+    # Convert `hasnot` to a set of disallowed letters
+    disallowed_letters = hasnot
+
+    result_words = set()
+    file_path = "pruned_polish.txt"
+
+    try:
+        with open(file_path, "r", encoding="UTF-8") as file:
+            for line in file:
+                # Find all words in the line
+                words = re.findall(r"\b\w+\b", line)
+
+                for word in words:
+                    word_lower = word.lower()
+                    # Check if all required letters are in the word
+                    if len(word) == length and required_letters.issubset(
+                        set(word_lower)
+                    ):
+                        # Check if none of the disallowed letters are in the word
+                        if not disallowed_letters.intersection(set(word_lower)):
+                            result_words.add(word_lower)
+                        else:
+                            continue
+                            # print(f"Excluded due to disallowed letters: {word}")
+                    else:
+                        continue
+                        # print(f"Excluded due to missing letters: {word}")
+
+    except FileNotFoundError:
+        print(f"File '{file_path}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    return result_words
 
 
 # function to add word to the history.txt
@@ -64,6 +104,14 @@ def write_saved(key, value, filename="saved.txt"):
 
 def load_color_theme(t):
     global hangman_color, loss_color, letter_color, bg_color, theme
+    global WHITE, BLUE, BLACK, GREEN, RED, GREY
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    BLUE = (0, 0, 255)
+    GREEN = (0, 255, 0)
+    RED = (255, 0, 0)
+    GREY = (120, 120, 120)
+
     if t == 2:
         # color theme2
         hangman_color = (12, 13, 13)
@@ -94,6 +142,12 @@ def load_color_theme(t):
         loss_color = (247, 149, 152)
         letter_color = (220, 220, 220)
         bg_color = (0, 50, 65)
+    elif t == 7:
+        # color theme7
+        hangman_color = (250, 240, 180)
+        loss_color = (147, 255, 130)
+        letter_color = (200, 220, 255)
+        bg_color = (48, 83, 75)
     else:
         theme = 1
         # color theme1
@@ -139,7 +193,8 @@ def reset_game():
         wrong_guesses, \
         game_over, \
         score, \
-        highscore
+        highscore, \
+        bad_letters
     if not game_over and wrong_guesses > 0:
         score = 0
         write_saved("score", score)
@@ -164,6 +219,9 @@ def reset_game():
     Add_history(current_word)
     guessed_letters.clear()
     correct_letters.clear()
+    bad_letters.clear()
+    write_saved("bad_letters", bad_letters)
+    guessed_letters.clear()
     write_saved("guessed_letters", guessed_letters)
     write_saved("correct_letters", correct_letters)
 
@@ -180,12 +238,6 @@ pygame.init()
 
 # Constants
 WIDTH, HEIGHT = 800, 600
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-GREY = (120, 120, 120)
 
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -196,7 +248,8 @@ fps_target = 24
 big_font = pygame.font.Font(None, 80)
 long_font = pygame.font.Font(None, 60)
 font = pygame.font.Font(None, 48)
-small_font = pygame.font.Font(None, 36)
+score_font = pygame.font.Font(None, 36)
+tried_letters = pygame.font.Font(None, 60)
 very_small_font = pygame.font.Font(None, 16)
 
 selected_language = read_saved("language")
@@ -207,6 +260,7 @@ current_word = read_saved("current_word")
 empty_guessed_letters = set()
 guessed_letters = set()
 correct_letters = set()
+bad_letters = set()
 correct_letters = read_saved("correct_letters")
 guessed_letters = read_saved("guessed_letters")
 wrong_guesses = 0
@@ -247,6 +301,7 @@ while running:
                         highscore = score
                         write_saved("highscore", highscore)
                 if letter not in current_word:
+                    bad_letters.add(letter)
                     wrong_guesses += 1
                     write_saved("wrong_guesses", wrong_guesses)
                     winsound.Beep(400, 200)
@@ -261,6 +316,8 @@ while running:
                     write_saved("language", selected_language)
                 word_list = load_dictionary(selected_language)
                 reset_game()
+            if event.key == pygame.K_F10:
+                print(len(find_words(correct_letters, bad_letters, len(current_word))))
             if event.key == pygame.K_F1 and game_over:
                 explain_word(current_word)
             if event.key == pygame.K_F3:
@@ -296,7 +353,7 @@ while running:
     else:
         tempcolor = hangman_color
 
-    text_surface = small_font.render(
+    text_surface = score_font.render(
         f"score: {score}",
         True,
         tempcolor,
@@ -391,9 +448,9 @@ while running:
 
     # used_letters_text = capitalize_selected(used_letters_text, correct_letters)
 
-    text_surface = small_font.render(used_letters_text, True, letter_color)
+    text_surface = tried_letters.render(used_letters_text, True, letter_color)
     screen.blit(
-        text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 150)
+        text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 130)
     )
 
     # Check for win/loss
