@@ -9,8 +9,10 @@ import re
 
 def find_words(has, hasnot, length):
     # Convert `has` to a set of required letters
-    required_letters = has
+    # required_letters = has
     # Convert `hasnot` to a set of disallowed letters
+    temphas = has.replace("_", ".")
+    print(f"checking <{temphas}>")
     disallowed_letters = hasnot
 
     result_words = set()
@@ -25,9 +27,8 @@ def find_words(has, hasnot, length):
                 for word in words:
                     word_lower = word.lower()
                     # Check if all required letters are in the word
-                    if len(word) == length and required_letters.issubset(
-                        set(word_lower)
-                    ):
+                    # if len(word) == length and required_letters.issubset(set(word_lower)):
+                    if re.findall(temphas, word_lower) and len(word) == length:
                         # Check if none of the disallowed letters are in the word
                         if not disallowed_letters.intersection(set(word_lower)):
                             result_words.add(word_lower)
@@ -222,15 +223,7 @@ def explain_word(my_word):
 
 # Function to reset the game
 def reset_game():
-    global \
-        current_word, \
-        guessed_letters, \
-        correct_letters, \
-        wrong_guesses, \
-        game_over, \
-        score, \
-        highscore, \
-        bad_letters
+    global current_word, guessed_letters, correct_letters, wrong_guesses, game_over, score, highscore, bad_letters
     if not game_over and wrong_guesses > 0:
         score = 0
         write_saved("score", score)
@@ -291,6 +284,7 @@ very_small_font = pygame.font.Font(None, 16)
 selected_language = read_saved("language")
 locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")  # sort rules
 word_list = load_dictionary(selected_language)
+displayed_word = ""
 current_word = random.choice(word_list)
 current_word = read_saved("current_word")
 empty_guessed_letters = set()
@@ -321,11 +315,7 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             letter = event.unicode.lower()
-            if (
-                letter not in guessed_letters
-                and not game_over
-                and letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzżź"
-            ):
+            if letter not in guessed_letters and not game_over and letter in "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzżź":
                 guessed_letters.add(letter)
                 write_saved("guessed_letters", guessed_letters)
                 if letter in current_word and len(letter) == 1:
@@ -353,7 +343,7 @@ while running:
                 word_list = load_dictionary(selected_language)
                 reset_game()
             if event.key == pygame.K_F10:
-                print(len(find_words(correct_letters, bad_letters, len(current_word))))
+                print(f"found {len(find_words(displayed_word, bad_letters, len(current_word)))} possible words")
             if event.key == pygame.K_F1 and game_over:
                 explain_word(current_word)
             if event.key == pygame.K_F3:
@@ -413,9 +403,7 @@ while running:
     )
 
     # Draw the word with underscores for unguessed letters
-    displayed_word = "".join(
-        [letter if letter in guessed_letters else "_" for letter in current_word]
-    )
+    displayed_word = "".join([letter if letter in guessed_letters else "_" for letter in current_word])
 
     word_length = len(displayed_word)
     for placed_letter in range(0, word_length):
@@ -428,28 +416,20 @@ while running:
 
         word_width = word_length * size_multiplier
         if size_multiplier > 30:
-            text_surface = big_font.render(
-                displayed_word[placed_letter], True, letter_color
-            )
+            text_surface = big_font.render(displayed_word[placed_letter], True, letter_color)
             screen.blit(
                 text_surface,
                 (
-                    -text_surface.get_width() // 2
-                    + WIDTH
-                    - (word_length - placed_letter) * size_multiplier,
+                    -text_surface.get_width() // 2 + WIDTH - (word_length - placed_letter) * size_multiplier,
                     200,
                 ),
             )
         elif size_multiplier <= 30:
-            text_surface = font.render(
-                displayed_word[placed_letter], True, letter_color
-            )
+            text_surface = font.render(displayed_word[placed_letter], True, letter_color)
             screen.blit(
                 text_surface,
                 (
-                    -text_surface.get_width() // 2
-                    + WIDTH
-                    - (word_length - placed_letter) * size_multiplier,
+                    -text_surface.get_width() // 2 + WIDTH - (word_length - placed_letter) * size_multiplier,
                     200,
                 ),
             )
@@ -489,18 +469,14 @@ while running:
     # used_letters_text = capitalize_selected(used_letters_text, correct_letters)
 
     text_surface = tried_letters.render(used_letters_text, True, letter_color)
-    screen.blit(
-        text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 130)
-    )
+    screen.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 130))
 
     # Check for win/loss
     if "_" not in displayed_word:
         if not game_over:
             write_saved("score", score)
         game_over = True
-        text_surface = font.render(
-            "Great!   Space to continue... (F1)", True, loss_color
-        )
+        text_surface = font.render("Great!   Space to continue... (F1)", True, loss_color)
         screen.blit(
             text_surface,
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
@@ -518,19 +494,11 @@ while running:
         if not game_over:
             write_saved("score", 0)
         game_over = True
-        text_surface = font.render(
-            f"Game Over! The word was {current_word}. (F1)", True, loss_color
-        )
-        screen.blit(
-            text_surface,
-            (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
-        )
+        text_surface = font.render(f"Game Over! The word was {current_word}. (F1)", True, loss_color)
+        screen.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200))
         if show_score:
             text_surface = font.render(f"Your score: {score}", True, loss_color)
-            screen.blit(
-                text_surface,
-                (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 260),
-            )
+            screen.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 260))
 
     # Update the display
     pygame.display.flip()

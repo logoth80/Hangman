@@ -4,6 +4,9 @@ import re
 def find_words(has, hasnot):
     # Convert `has` to a set of required letters
     required_letters = set(has)
+    tempre = "_"
+    temphas = has.replace(tempre, ".")
+
     # Convert `hasnot` to a set of disallowed letters
     disallowed_letters = set(hasnot)
 
@@ -19,7 +22,8 @@ def find_words(has, hasnot):
                 for word in words:
                     word_lower = word.lower()
                     # Check if all required letters are in the word
-                    if required_letters.issubset(set(word_lower)):
+                    # if required_letters.issubset(set(word_lower)):
+                    if re.findall(temphas, word_lower):
                         # Check if none of the disallowed letters are in the word
                         if not disallowed_letters.intersection(set(word_lower)):
                             print(word)
@@ -37,3 +41,6 @@ def find_words(has, hasnot):
         print(f"An error occurred: {e}")
 
     return result_words
+
+
+print(find_words("k_cica", "bj"))
