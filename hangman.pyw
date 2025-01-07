@@ -323,6 +323,7 @@ while running:
                     correct_letters.add(letter)
                     write_saved("correct_letters", correct_letters)
                     write_saved("score", score)
+                    winsound.Beep(300, 100)
                     if score > highscore:
                         highscore = score
                         write_saved("highscore", highscore)
@@ -330,7 +331,7 @@ while running:
                     bad_letters.add(letter)
                     wrong_guesses += 1
                     write_saved("wrong_guesses", wrong_guesses)
-                    winsound.Beep(400, 200)
+                    winsound.Beep(800, 70)
                     if wrong_guesses >= max_wrong_guesses:
                         show_score = True
             if event.key == pygame.K_F2:
