@@ -280,6 +280,10 @@ font = pygame.font.Font(None, 48)
 score_font = pygame.font.Font(None, 36)
 tried_letters = pygame.font.Font(None, 60)
 very_small_font = pygame.font.Font(None, 16)
+r = []
+for i in range(50):
+    j = 0
+    r.append(random.randint(-j, j))
 
 selected_language = read_saved("language")
 locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")  # sort rules
@@ -438,25 +442,25 @@ while running:
     def draw_hangman():
         # Draw the hangman on the left side
         if wrong_guesses >= 1:
-            pygame.draw.line(screen, hangman_color, (10, 370), (190, 370), 5)
+            pygame.draw.line(screen, hangman_color, (10 + r[0], 370 + r[1]), (190 + r[3], 370 + r[4]), 5)
         if wrong_guesses >= 2:
-            pygame.draw.line(screen, hangman_color, (100, 60), (100, 370), 5)
+            pygame.draw.line(screen, hangman_color, (100 + r[5], 60 + r[6]), (100 + r[7], 370 + r[8]), 5)
         if wrong_guesses >= 3:
-            pygame.draw.line(screen, hangman_color, (200, 60), (100, 60), 5)
+            pygame.draw.line(screen, hangman_color, (200 + r[9], 60 + r[10]), (100 + r[11], 60 + r[12]), 5)
         if wrong_guesses >= 4:
-            pygame.draw.line(screen, hangman_color, (200, 60), (200, 110), 5)
+            pygame.draw.line(screen, hangman_color, (200 + r[13], 60 + r[14]), (200 + r[15], 110 + r[16]), 5)
         if wrong_guesses >= 5:
             pygame.draw.circle(screen, hangman_color, (200, 135), 25, 5)
         if wrong_guesses >= 6:
-            pygame.draw.line(screen, hangman_color, (200, 160), (200, 230), 5)
+            pygame.draw.line(screen, hangman_color, (200 + r[17], 160 + r[18]), (200 + r[19], 230 + r[20]), 5)
         if wrong_guesses >= 7:
-            pygame.draw.line(screen, hangman_color, (200, 170), (170, 230), 5)
+            pygame.draw.line(screen, hangman_color, (200 + r[21], 170 + r[22]), (170 + r[23], 230 + r[24]), 5)
         if wrong_guesses >= 8:
-            pygame.draw.line(screen, hangman_color, (200, 170), (230, 230), 5)
+            pygame.draw.line(screen, hangman_color, (200 + r[25], 170 + r[26]), (230 + r[27], 230 + r[28]), 5)
         if wrong_guesses >= 9:
-            pygame.draw.line(screen, hangman_color, (200, 230), (170, 310), 5)
+            pygame.draw.line(screen, hangman_color, (200 + r[29], 230 + r[30]), (170 + r[31], 310 + r[32]), 5)
         if wrong_guesses >= 10:
-            pygame.draw.line(screen, hangman_color, (200, 230), (230, 310), 5)
+            pygame.draw.line(screen, hangman_color, (200 + r[33], 230 + r[34]), (230 + r[35], 310 + r[36]), 5)
 
     draw_hangman()
 
