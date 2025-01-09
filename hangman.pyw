@@ -224,10 +224,12 @@ def explain_word(my_word):
 # Function to reset the game
 def reset_game():
     global current_word, guessed_letters, correct_letters, wrong_guesses, game_over, score, highscore, bad_letters
-    if not game_over and wrong_guesses > 0:
+    if not game_over and wrong_guesses >= 0:
         score = 0
+        Add_history(f"--------restarted on {current_word}")
         write_saved("score", score)
     elif game_over and wrong_guesses >= max_wrong_guesses:
+        Add_history(f"died at {current_word} with {score} points")
         score = 0
         write_saved("score", score)
         write_saved("correct_letters", empty_guessed_letters)
@@ -237,6 +239,7 @@ def reset_game():
     elif game_over and wrong_guesses < max_wrong_guesses:
         score = score - wrong_guesses + 45 - 2 * len(current_word)
         write_saved("score", score)
+        Add_history(current_word)
         if score > highscore:
             highscore = score
             write_saved("highscore", highscore)
@@ -245,7 +248,7 @@ def reset_game():
     game_over = False
     current_word = random.choice(word_list)
     write_saved("current_word", current_word)
-    Add_history(current_word)
+    # Add_history(current_word)
     guessed_letters.clear()
     correct_letters.clear()
     bad_letters.clear()
@@ -303,9 +306,9 @@ max_wrong_guesses = 10
 running = True
 game_over = False
 show_score = False
-score = 0
-if wrong_guesses < max_wrong_guesses:
-    score = read_saved("score")
+# score = 0
+# if wrong_guesses < max_wrong_guesses:
+score = read_saved("score")
 theme = read_saved("theme")
 highscore = read_saved("highscore")
 
@@ -496,8 +499,8 @@ while running:
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 260),
         )
     elif wrong_guesses == max_wrong_guesses:
-        if not game_over:
-            write_saved("score", 0)
+        # if not game_over:
+        # write_saved("score", 0)
         game_over = True
         text_surface = font.render(f"Game Over! The word was {current_word}. (F1)", True, loss_color)
         screen.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200))
