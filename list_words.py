@@ -46,5 +46,11 @@ def find_words(has, hasnot, length):
 has = input("Enter the required letters (e.g., 'p.ciąg..y): ")
 hasnot = input("Enter the disallowed letters (e.g., 'xjuz'): ")
 length = int(input("Enter the word length: ") or "0")
-print(find_words(has, hasnot, length))
+result = find_words(has, hasnot, length)
+if len(result) <= 100:
+    print(result)
+else:
+    print("Too many results to display. Please refine your search criteria.")
+
+
 input()
