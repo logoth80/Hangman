@@ -5,6 +5,7 @@ import sys
 import locale
 import webbrowser
 import re
+import psutil
 
 
 def find_words(has, hasnot, length):
@@ -265,6 +266,18 @@ def next_theme():
     write_saved("theme", theme)
 
 
+# terminate if instance is running more than once
+processes = [p.cmdline() for p in psutil.process_iter() if p.name().lower() in ["hangman.exe"]]
+if len(processes) > 2:
+    sys.exit()
+processes = [p.cmdline() for p in psutil.process_iter() if p.name().lower() in ["pythonw.exe"]]
+
+count = 0
+for process in processes:
+    if any("hangman.pyw" in arg.lower() for arg in process):
+        count += 1
+        if count >= 2:
+            sys.exit()
 # Initialize Pygame
 pygame.init()
 
@@ -490,7 +503,7 @@ while running:
             (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 + 200),
         )
         text_surface = font.render(
-            f"Your score: {score-wrong_guesses+45-2*len(current_word)}",
+            f"Your score: {score - wrong_guesses + 45 - 2 * len(current_word)}",
             True,
             loss_color,
         )
